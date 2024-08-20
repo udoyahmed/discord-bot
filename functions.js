@@ -89,10 +89,14 @@ async function valorantMatch(name, tag) {
 
             let teams = lastMatch.teams;
             let winningTeam;
+            let winningRounds;
+            let losingRounds;
 
             teams.forEach(team => {
                 if (team.won) {
                     winningTeam = team.team_id;
+                    winningRounds = team.rounds.won;
+                    losingRounds = team.rounds.lost;
                 }
             })
 
@@ -120,7 +124,9 @@ async function valorantMatch(name, tag) {
                 server: server,
                 blueTeam: blueTeam,
                 redTeam: redTeam,
-                winningTeam: winningTeam
+                winningTeam: winningTeam,
+                winningRounds: winningRounds,
+                losingRounds: losingRounds,
             };
 
             console.log(generatedMessage);

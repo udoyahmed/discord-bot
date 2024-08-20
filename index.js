@@ -71,7 +71,7 @@ client.on('interactionCreate', async interaction => {
             const result = await valorantMatch(name, tag);
 
             await interaction.editReply({
-                content: `Last Math Data: \n\nMap: ${result.map}\nType: ${result.type}\nServer: ${result.server}\n\nBlue Team: \n${result.blueTeam.join('\n')}\n\nRed Team: \n${result.redTeam.join('\n')} \n\nWinning Team: ${result.winningTeam}`,
+                content: `${name}#${tag}'s Last Math Data: \n\nMap: ${result.map}\nType: ${result.type}\nServer: ${result.server}\n\nBlue Team: \n${result.blueTeam.join('\n')}\n\nRed Team: \n${result.redTeam.join('\n')} \n\nWinning Team: ${result.winningTeam} (${result.winningRounds}:${result.losingRounds})`,
             });
         } catch (error) {
             console.error(error);
