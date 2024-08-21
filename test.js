@@ -20,8 +20,6 @@ async function getValorantAccount() {
         let server = lastMatch.metadata.cluster;
 
         let players = lastMatch.players;
-        let blueTeam = [];
-        let redTeam = [];
         let blueTeamData = [];
         let redTeamData = [];
 
@@ -61,5 +59,3 @@ async function getValorantAccount() {
         console.error('Error fetching data:', error.message);
     }
 }
-
-getValorantAccount();

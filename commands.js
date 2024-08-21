@@ -53,4 +53,8 @@ const commands = [
         name: "botleave",
         description: "Leave the voice channel"
     },
+    {
+        name: "baati",
+        description: "Context behind the baatilization of the server."
+    }
 ];
