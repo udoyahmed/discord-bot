@@ -4,6 +4,7 @@ import { joinVoiceChannel, getVoiceConnection, createAudioPlayer, createAudioRes
 import { Player, QueryType, useMainPlayer } from "discord-player";
 import { valorantID, valorantMatch } from './functions.js';
 import { commands } from './commands.js';
+import playdl from 'play-dl';
 
 env.config()
 
@@ -182,5 +183,45 @@ client.on('messageCreate', async (message) => {   // listen to texts
             console.error(error);
             message.reply('An error occurred while processing your request.');
         }
+    }
+
+    // try the sound thingy: 
+
+    if (!message?.author?.bot && messageContent.startsWith('!playBot')) {
+        const songNumber = messageContent.replace('!playBot ', '');
+        const voiceChannel = message.member.voice.channel;
+
+        if (!voiceChannel) {
+            return message.reply('You need to be in a voice channel to play audio!');
+        }
+
+        // Join the voice channel
+        const connection = joinVoiceChannel({
+            channelId: voiceChannel.id,
+            guildId: message.guild.id,
+            adapterCreator: message.guild.voiceAdapterCreator,
+        });
+
+        // Create an audio player
+        const player = createAudioPlayer();
+
+        // Create an audio resource from a local file
+        const audioFilePath = `./media/${songNumber}.mp3`;
+        const resource = createAudioResource(audioFilePath);
+
+        // Play the audio resource
+        player.play(resource);
+        connection.subscribe(player);
+
+        // Handle player events
+        player.on(AudioPlayerStatus.Idle, () => {
+            connection.destroy();
+        });
+
+        player.on('error', error => {
+            console.error('Error:', error);
+        });
+
+        message.reply('Playing audio!');
     }
 });

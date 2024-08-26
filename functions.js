@@ -91,6 +91,7 @@ async function valorantMatch(name, tag) {
             let winningTeam;
             let winningRounds;
             let losingRounds;
+            let rank = null;
 
             teams.forEach(team => {
                 if (team.won) {
@@ -109,10 +110,14 @@ async function valorantMatch(name, tag) {
                 let deaths = player.stats.deaths;
                 let assists = player.stats.assists;
 
+                if (type == "Competitive") {
+                    rank = player.tier.name;
+                }
+
                 if (team == 'Blue') {
-                    blueTeam.push(`${playerName}#${playerTag} --- ${agent} --- KDA: ${kills}/${deaths}/${assists}`);
+                    blueTeam.push(`${playerName}#${playerTag} --- ${agent} --- KDA: ${kills}/${deaths}/${assists} ${rank ? "--- " + rank : null}`);
                 } else {
-                    redTeam.push(`${playerName}#${playerTag} --- ${agent} --- KDA: ${kills}/${deaths}/${assists}`);
+                    redTeam.push(`${playerName}#${playerTag} --- ${agent} --- KDA: ${kills}/${deaths}/${assists} ${rank ? "--- " + rank : null}`);
                 }
             });
 
