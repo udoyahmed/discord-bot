@@ -115,9 +115,9 @@ async function valorantMatch(name, tag) {
                 }
 
                 if (team == 'Blue') {
-                    blueTeam.push(`${playerName}#${playerTag} --- ${agent} --- KDA: ${kills}/${deaths}/${assists} ${rank ? "--- " + rank : null}`);
+                    blueTeam.push(`${playerName}#${playerTag} --- ${agent} --- KDA: ${kills}/${deaths}/${assists} ${rank ? "--- " + rank : ""}`);
                 } else {
-                    redTeam.push(`${playerName}#${playerTag} --- ${agent} --- KDA: ${kills}/${deaths}/${assists} ${rank ? "--- " + rank : null}`);
+                    redTeam.push(`${playerName}#${playerTag} --- ${agent} --- KDA: ${kills}/${deaths}/${assists} ${rank ? "--- " + rank : ""}`);
                 }
             });
 
