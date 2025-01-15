@@ -4,6 +4,7 @@ import { joinVoiceChannel, getVoiceConnection, createAudioPlayer, createAudioRes
 import { Player, QueryType, useMainPlayer } from "discord-player";
 import { valorantID, valorantMatch } from './functions.js';
 import { commands } from './commands.js';
+import songList from './songList.js';
 import playdl from 'play-dl';
 
 env.config()
@@ -184,12 +185,22 @@ client.on('messageCreate', async (message) => {   // listen to texts
             message.reply('An error occurred while processing your request.');
         }
     }
+    if (!message?.author?.bot && messageContent.startsWith('!songList')) {
+        const result = `${songList.map(song => `${song.id}: ${song.name}`).join('\n')} \n\nUse !playBot <song number> to play the song.`;
+        try {
+            message.reply(result);
+        } catch (error) {
+            console.error(error);
+            message.reply('An error occurred while processing your request.');
+        }
+    }
 
     // try the sound thingy: 
 
     if (!message?.author?.bot && messageContent.startsWith('!playBot')) {
         const songNumber = messageContent.replace('!playBot ', '');
         const voiceChannel = message.member.voice.channel;
+        const songName = songList.find(song => song.id == songNumber)?.name;
 
         if (!voiceChannel) {
             return message.reply('You need to be in a voice channel to play audio!');
@@ -214,14 +225,57 @@ client.on('messageCreate', async (message) => {   // listen to texts
         connection.subscribe(player);
 
         // Handle player events
-        player.on(AudioPlayerStatus.Idle, () => {
-            connection.destroy();
+        // player.on(AudioPlayerStatus.Idle, () => {
+        //     connection.destroy();
+        // });
+
+        player.on('stateChange', (oldState, newState) => {
+            if (newState.status === AudioPlayerStatus.Idle && oldState.status !== AudioPlayerStatus.Paused) {
+                connection.destroy();
+            } else if (newState.status === AudioPlayerStatus.Paused) {
+                console.log('Audio is paused.');
+            }
         });
+
 
         player.on('error', error => {
             console.error('Error:', error);
         });
 
-        message.reply('Playing audio!');
+        const nowPlayingMessage = `Now playing: ${songName}`;
+        console.log(nowPlayingMessage);
+        message.reply(nowPlayingMessage);
     }
+
+    // Pause the audio
+    // Pause the audio
+    if (!message?.author?.bot && messageContent.startsWith('!pauseBot')) {
+        if (player) {
+            const success = player.pause(); // Correct method for pausing
+            if (success) {
+                message.reply('Audio paused.');
+            } else {
+                message.reply('Failed to pause the audio.');
+            }
+        } else {
+            message.reply('No audio is currently playing.');
+        }
+    }
+
+    // Resume the audio
+    if (!message?.author?.bot && messageContent.startsWith('!resumeBot')) {
+        if (player) {
+            const success = player.unpause(); // Correct method for resuming
+            if (success) {
+                message.reply('Audio resumed.');
+            } else {
+                message.reply('Failed to resume the audio.');
+            }
+        } else {
+            message.reply('No audio is currently paused.');
+        }
+    }
+
+
+
 });
